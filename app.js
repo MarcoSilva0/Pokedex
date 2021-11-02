@@ -1,13 +1,14 @@
 //Função para buscar os pokemons
 const fetchPokemon = () => {
-    //url api e deixo ela dinamica por do uso de
+    //Url da api
     const getPokemonUrl = id => `https://pokeapi.co/api/v2/pokemon/${id}`
-    const pokemonPromises = []
 
-    //loop para pegar todos os pokemons
-    for (let i = 1; i <= 150; i++) {
-        pokemonPromises.push(fetch(getPokemonUrl(i)).then(response => response.json()))
-    }
+    //Após a refatoração, foi criado uma const que tem um array com todos e usou-se o map para filtrar
+    const generatePokemonPromises = () => Array(150).fill().map((_, index) =>
+        fetch(getPokemonUrl(index + 1)).then(response => response.json())
+    )
+
+    const pokemonPromises = generatePokemonPromises()
 
     Promise.all(pokemonPromises)
         .then(pokemons => {
@@ -25,12 +26,9 @@ const fetchPokemon = () => {
                 `
                 return accumulator
             }, '')
-
             const ul = document.querySelector('[data-js="pokedex"]')
-
             ul.innerHTML = lisPokemons
         })
-
 }
 
 fetchPokemon()
